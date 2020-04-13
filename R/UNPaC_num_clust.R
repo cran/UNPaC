@@ -2,63 +2,69 @@
 #'
 #' UNPaC for estimating the number of clusters Compares the cluster index (CI) from the original data to that
 #' produced by clustering a simulated ortho-unimodal reference distribution generated using a Gaussian copula.
-#' The CI is defined to be the sum of the within-cluster sum of squares about the cluster means divided by the total sum of squares.   
-#' The number of clusters is chosen to maximize the difference between the data cluster index and the 
+#' The CI is defined to be the sum of the within-cluster sum of squares about the cluster means divided by the total sum of squares.
+#' The number of clusters is chosen to maximize the difference between the data cluster index and the
 #' reference cluster indices, but additional rules are also implmented (See below). This method is similar to them method
-#' described in Helgeson and Bair (2016) except a Gaussian copula approach is used to account for feature correlation and the rules for 
+#' described in Helgeson and Bair (2016) except a Gaussian copula approach is used to account for feature correlation and the rules for
 #' choosing the number of clusters are as described below.
 #'
-#' @param x a dataset with n observations (rows) and p features (columns) 
+#' @param x a dataset with n observations (rows) and p features (columns)
 #' @param k maximum number of clusters considered. (default=10)
-#' @param cluster.fun function used to cluster data. Function should return list containing a component "cluster." 
-#' Examples include \code{\link[stats]{kmeans}} and  \code{\link[cluster]{pam}}. 
+#' @param cluster.fun function used to cluster data. Function should return list containing a component "cluster."
+#' Examples include \code{\link[stats]{kmeans}} and  \code{\link[cluster]{pam}}.
 #' @param nsim a numeric value specifying the number of unimodal reference distributions used for testing (default=1000)
-#' @param cov method used for approximating the covariance structure.  options include: "glasso" 
-#' (See \code{\link{glasso}}), and  "est". (default = "glasso")
-#' @param rho  a regularization parameter used in implementation of the graphical lasso. See documentation in  
-#' @param scale should data be scaled such that each feature has variance equal to one prior to clustering 
+#' @param cov method used for approximating the covariance structure.  options include: "glasso"
+#' (See \code{\link[huge]{huge}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
+#'        "est" (default = "glasso")
+#' @param rho  a regularization parameter used in implementation of the graphical lasso. See documentation for lambda in
+#' \code{\link[huge]{huge}}.
+#' Not used if \code{cov="est"} or \code{cov="banded"}
+#' @param scale should data be scaled such that each feature has variance equal to one prior to clustering
 #' (default=FALSE)
-#' @param center should data be centered such that each feature has mean equal to zero prior to clustering 
+#' @param center should data be centered such that each feature has mean equal to zero prior to clustering
 #' (default=TRUE)
 #' @param var_selection should dimension be reduced using feature filtering procedure? See description below. (default=FALSE)
-#' @param p.adjust p-value adjustment method for additional feature filtering. See \code{\link[stats]{p.adjust}} 
+#' @param p.adjust p-value adjustment method for additional feature filtering. See \code{\link[stats]{p.adjust}}
 #' for options. (default="fdr"). Not used if p.adjust="none."
 #' @param gamma threshold for feature filtering procedure. See description below. Not used if var_selection=FALSE (default=0.10)
-#' @param d.power Power in estimating the low of the within cluster dispersion for comparison to the Gap statistic. See  \code{\link[cluster]{clusGap}}. 
+#' @param d.power Power in estimating the low of the within cluster dispersion for comparison to the Gap statistic. See  \code{\link[cluster]{clusGap}}.
 #'
 #'
 #'
 #' @return
-#' The function returns a list with the following components: 
+#' The function returns a list with the following components:
 #' \itemize{
 #' \item{\code{BestK}}: {A matrix with 1 row and 4 columns named: "Max_CI","Max_CI_wi_1SE","Max_scaled_CI" and "Max_logWCSS_wi_1SE".
 #' These correspond to the number of clusters, K, chosen by four different rules. "Max_CI choses K to maximize the difference in CI's between the true data and the
 #' reference data. "Max_CI_wi_1SE" uses the "1-SE" criterion as in Tibshirani et al (2001), except for the CI.
 #' "Max_scaled_CI" chooses K to maximize the difference in CIs from the observed and reference data scaled by the standard error of the reference data CIs.
 #' "Max_logWCSS_wi_1SE" uses the Gap statistic and the "1-SE" criterion (Tibshirani et al, 2001) for choosing K.}
-#' \item{\code{full_process}}: {A matrix containing the number of clusters, K, evaluated, the CI from the data, the average CI from the null 
-#' distribution, the difference between the data CI and average null CI, the standard error for the difference in CIs, the log of the within cluster dispersion from the data, 
+#' \item{\code{full_process}}: {A matrix containing the number of clusters, K, evaluated, the CI from the data, the average CI from the null
+#' distribution, the difference between the data CI and average null CI, the standard error for the difference in CIs, the log of the within cluster dispersion from the data,
 #' the average log of within cluster dispersion from the null data, The difference in within cluster dispersion (the Gap statistic), and the standard error for the Gap statistic.}
 #' \item{\code{selected_features}}: {A vector of integers indicating the features retained by the feature filtering process.}}
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #' @references
 #' \itemize{
 #'     \item Helgeson E and Bair E (2016). Non-Parametric Cluster Significance Testing with Reference to a Unimodal Null Distribution.
 #'     arXiv preprint arXiv:1610.01424.
 #'     \item Tibshirani, R., Walther, G. and Hastie, T. (2001). Estimating the number of data clusters via the Gap statistic. Journal of the Royal Statistical Society B, 63, 411-423.
-#'     
+#'
 #' }
 #'
 #' @details
-#' There are two options for the covariance matrix used in generating the Gaussian 
-#' copula: sample covariance estimation, \code{cov="est"}, which should be used if n>p, and the graphical lasso 
-#' \code{cov="glasso"} which should be used if n<p. 
-#' 
-#' In high dimensional (n<p) settings a dimension reduction step can be implemented which selects features 
-#' based on an F-test for difference in means across clusters. Features having a p-value less than a threshold 
-#' \code{gamma} are retained. For additional feature filtering a p-value adjustment procedure (such as p.adjust="fdr") 
+#' There are three options for the covariance matrix used in generating the Gaussian
+#' copula: sample covariance estimation, \code{cov="est"}, which should be used if n>p; the graphical lasso,
+#' \code{cov="glasso"}, which should be used if n<p; and  k-banded covariance, \code{cov="banded"}, which can be used if n<p and it can be assumed that
+#' features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[huge]{huge}} function.
+#' When \code{cov="banded"} is selected the k-banded covariance Cholesky factor of Rothman, Levina, and Zhu (2010) is used to estimate the covariance matrix.
+#' Cross-validation is used for selecting the banding parameter. See documentation in \code{\link[PDSCE]{band.chol.cv}}.
+#'
+#' In high dimensional (n<p) settings a dimension reduction step can be implemented which selects features
+#' based on an F-test for difference in means across clusters. Features having a p-value less than a threshold
+#' \code{gamma} are retained. For additional feature filtering a p-value adjustment procedure (such as p.adjust="fdr")
 #' can be used. If no features are retained the resulting p-value for the cluster significance test is given as 1.
 #'
 #' @examples
@@ -66,11 +72,11 @@
 #'   test1[1:30,1:50] <- rnorm(30*50, 2)
 #'   test.edit<-scale(test1,center=TRUE,scale=FALSE)
 #'   UNPaC_k<-UNPaC_num_clust(test.edit,k=5,kmeans,nsim=100,cov="est")
-#' 	 
+#'
 #' @export
 #' @name UNPaC_num_clust
 #' @author Erika S. Helgeson, David Vock, Eric Bair
-#' 
+#'
 
 
 
@@ -85,7 +91,7 @@ scale=FALSE,center=FALSE,var_selection=FALSE,p.adjust="none",gamma=.1,d.power=1)
     }else{
     x=matrix(x[,VS],ncol=length(VS))
   }}
-  
+
 out<-matrix(nrow=k,ncol=9)
 colnames(out)<-c("k","data_CI","ave_null_CI","CI_diff","CI_SE","data_logW","Null_logW","WCSS_Gap","logW_SE")
 
