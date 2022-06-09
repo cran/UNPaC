@@ -8,16 +8,16 @@ UNPaC_null_sig<- function(x, k,cluster.fun,nsim=100, rho=0.02, cov="glasso",cent
     out.select =PDSCE::band.chol.cv(x.s)
     out$param=out.select[grep("best",names(out.select))]
     cur.scov = out.select$sigma
-  }   else {cur.scov=var(x.s)}
+  }   else {cur.scov=stats::var(x.s)}
   cur.iscov <- chol(cur.scov)
   cur.h1 <- apply(x, 2, function(x) find.h1(x,h.max=1000))
-  x.var <- apply(x, 2, var)
+  x.var <- apply(x, 2, stats::var)
   for (i in 1:nsim) {
     cur.ystar <- apply(x, 2, sample, replace = TRUE)
-    xn <- cur.ystar + t(cur.h1 * matrix(rnorm(nrow(x) * ncol(x)), ncol = nrow(x), nrow = ncol(x)))
+    xn <- cur.ystar + t(cur.h1 * matrix(stats::rnorm(nrow(x) * ncol(x)), ncol = nrow(x), nrow = ncol(x)))
     xn <- t((1/sqrt(1 + cur.h1^2/x.var)) * t(xn))
-    U <- pnorm(matrix(rnorm(ncol(x) * row(x)), ncol = ncol(x)) %*% cur.iscov)
-    S = sapply(1:ncol(x), function(i) quantile(xn[, i], U[,i]))
+    U <- stats::pnorm(matrix(stats::rnorm(ncol(x) * row(x)), ncol = ncol(x)) %*% cur.iscov)
+    S = sapply(1:ncol(x), function(i) stats::quantile(xn[, i], U[,i]))
     xn.km <- cluster.fun(S, k)$cluster
    out[i] <- CI(S,xn.km)
           }
@@ -34,16 +34,16 @@ UNPaC_null_k<- function(x, k,cluster.fun,nsim=100, rho=0.02, cov="glasso",
       out.select =PDSCE::band.chol.cv(x.s)
       out$param=out.select[grep("best",names(out.select))]
       cur.scov = out.select$sigma
-    }   else {cur.scov=var(x.s)}
+    }   else {cur.scov=stats::var(x.s)}
   cur.iscov <- chol(cur.scov)
   cur.h1 <- apply(x, 2, function(x) find.h1(x,h.max=1000))
-  x.var <- apply(x, 2, var)
+  x.var <- apply(x, 2, stats::var)
   for (i in 1:nsim) {
     cur.ystar <- apply(x, 2, sample, replace = TRUE)
-    xn <- cur.ystar + t(cur.h1 * matrix(rnorm(nrow(x) * ncol(x)), ncol = nrow(x), nrow = ncol(x)))
+    xn <- cur.ystar + t(cur.h1 * matrix(stats::rnorm(nrow(x) * ncol(x)), ncol = nrow(x), nrow = ncol(x)))
     xn <- t((1/sqrt(1 + cur.h1^2/x.var)) * t(xn))
-    U <- pnorm(matrix(rnorm(ncol(x) * row(x)), ncol = ncol(x)) %*% cur.iscov)
-    S = sapply(1:ncol(x), function(i) quantile(xn[, i], U[,i]))
+    U <- stats::pnorm(matrix(stats::rnorm(ncol(x) * row(x)), ncol = ncol(x)) %*% cur.iscov)
+    S = sapply(1:ncol(x), function(i) stats::quantile(xn[, i], U[,i]))
     for (j in 1:k){
       xn.km <- cluster.fun(S, j)$cluster
       out[i,j] <- CI(S,xn.km)

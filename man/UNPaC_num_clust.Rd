@@ -4,9 +4,20 @@
 \alias{UNPaC_num_clust}
 \title{Unimodal Non-Parametric Cluster (UNPaC) Test for Estimating Number of Clusters}
 \usage{
-UNPaC_num_clust(x, k = 10, cluster.fun, nsim = 1000, cov = "glasso",
-  rho = 0.02, scale = FALSE, center = FALSE, var_selection = FALSE,
-  p.adjust = "none", gamma = 0.1, d.power = 1)
+UNPaC_num_clust(
+  x,
+  k = 10,
+  cluster.fun,
+  nsim = 1000,
+  cov = "glasso",
+  rho = 0.02,
+  scale = FALSE,
+  center = FALSE,
+  var_selection = FALSE,
+  p.adjust = "none",
+  gamma = 0.1,
+  d.power = 1
+)
 }
 \arguments{
 \item{x}{a dataset with n observations (rows) and p features (columns)}
@@ -59,9 +70,7 @@ UNPaC for estimating the number of clusters Compares the cluster index (CI) from
 produced by clustering a simulated ortho-unimodal reference distribution generated using a Gaussian copula.
 The CI is defined to be the sum of the within-cluster sum of squares about the cluster means divided by the total sum of squares.
 The number of clusters is chosen to maximize the difference between the data cluster index and the
-reference cluster indices, but additional rules are also implmented (See below). This method is similar to them method
-described in Helgeson and Bair (2016) except a Gaussian copula approach is used to account for feature correlation and the rules for
-choosing the number of clusters are as described below.
+reference cluster indices, but additional rules are also implemented (See below).  This method is described in Helgeson, Vock, and Bair (2021).
 }
 \details{
 There are three options for the covariance matrix used in generating the Gaussian
@@ -85,8 +94,8 @@ can be used. If no features are retained the resulting p-value for the cluster s
 }
 \references{
 \itemize{
-    \item Helgeson E and Bair E (2016). Non-Parametric Cluster Significance Testing with Reference to a Unimodal Null Distribution.
-    arXiv preprint arXiv:1610.01424.
+    \item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
+     Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
     \item Tibshirani, R., Walther, G. and Hastie, T. (2001). Estimating the number of data clusters via the Gap statistic. Journal of the Royal Statistical Society B, 63, 411-423.
 
 }

@@ -4,9 +4,20 @@
 \alias{UNPaC_Copula}
 \title{Unimodal Non-Parametric Cluster (UNPaC) Significance Test}
 \usage{
-UNPaC_Copula(x, cluster, cluster.fun, nsim = 100,
-  var_selection = FALSE, gamma = 0.1, p.adjust = "fdr", k = 2,
-  rho = 0.02, cov = "glasso", center = TRUE, scale = FALSE)
+UNPaC_Copula(
+  x,
+  cluster,
+  cluster.fun,
+  nsim = 100,
+  var_selection = FALSE,
+  gamma = 0.1,
+  p.adjust = "fdr",
+  k = 2,
+  rho = 0.02,
+  cov = "glasso",
+  center = TRUE,
+  scale = FALSE
+)
 }
 \arguments{
 \item{x}{a dataset with n observations (rows) and p features (columns)}
@@ -54,7 +65,7 @@ data is smaller the cluster index from the observed data}
 }
 \description{
 The UnPAC test assesses the significance of clusters by comparing the cluster index (CI) from the data to the CI from a ortho-unimodal reference data generated using a Gaussian copula.
-This method is similar to them method described in Helgeson and Bair (2016) except a Gaussian copula approach is used to account for feature correlation.
+This method is described in Helgeson, Vock, and Bair (2021).
  The CI is defined to be the sum of the
 within-cluster sum of squares about the cluster means divided by the total sum of squares. Smaller values of the
 CI indicate a stronger clustering.
@@ -95,7 +106,7 @@ test[,51:75] <- rnorm(25*1200, 0, 1)
 test.data<-scale(test,center=TRUE,scale=FALSE)
 # Defining clustering function
 hclustFunction<-function(x,k){
- D<-dist(x)
+ D<-stats::dist(x)
  xn.hc <- hclust(D, method="single")
  list(cluster=cutree(xn.hc, k))}
 
@@ -105,8 +116,8 @@ UNPaCResults <- UNPaC_Copula(test.data,cluster,hclustFunction, nsim=100,cov="est
 }
 \references{
 \itemize{
-    \item Helgeson E and Bair E (2016). ``Non-Parametric Cluster Significance Testing with Reference to a Unimodal Null Distribution."
-    arXiv preprint arXiv:1610.01424.
+    \item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
+     Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
     \item Rothman, A. J., Levina, E., and Zhu, J. (2010). ``A new approach to Cholesky-based covariance regularization in
  high dimensions." Biometrika 97(3): 539-550.
 }

@@ -4,9 +4,7 @@
 #' produced by clustering a simulated ortho-unimodal reference distribution generated using a Gaussian copula.
 #' The CI is defined to be the sum of the within-cluster sum of squares about the cluster means divided by the total sum of squares.
 #' The number of clusters is chosen to maximize the difference between the data cluster index and the
-#' reference cluster indices, but additional rules are also implmented (See below). This method is similar to them method
-#' described in Helgeson and Bair (2016) except a Gaussian copula approach is used to account for feature correlation and the rules for
-#' choosing the number of clusters are as described below.
+#' reference cluster indices, but additional rules are also implemented (See below).  This method is described in Helgeson, Vock, and Bair (2021).
 #'
 #' @param x a dataset with n observations (rows) and p features (columns)
 #' @param k maximum number of clusters considered. (default=10)
@@ -48,8 +46,8 @@
 #'
 #' @references
 #' \itemize{
-#'     \item Helgeson E and Bair E (2016). Non-Parametric Cluster Significance Testing with Reference to a Unimodal Null Distribution.
-#'     arXiv preprint arXiv:1610.01424.
+#'     \item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
+#'      Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
 #'     \item Tibshirani, R., Walther, G. and Hastie, T. (2001). Estimating the number of data clusters via the Gap statistic. Journal of the Royal Statistical Society B, 63, 411-423.
 #'
 #' }
@@ -114,7 +112,7 @@ out[i,3]<-(1/nsim)*sum(nulldata[[1]][,i])
 out[i,4]<-out[i,3]-out[i,2]
 
 # sd
-out[i,5]<-sd(nulldata[[1]][,i])*sqrt(1+1/nsim)
+out[i,5]<-stats::sd(nulldata[[1]][,i])*sqrt(1+1/nsim)
 
 # GAP
 out[i,6] <- log(GapW.k(x,cluster,d.power=d.power))
@@ -125,7 +123,7 @@ out[i,7]<-(1/nsim)*sum(nulldata[[2]][,i])
 out[i,8]<-out[i,7]-out[i,6]
 
 # sd
-out[i,9]<-sd(nulldata[[2]][,i])*sqrt(1+1/nsim)
+out[i,9]<-stats::sd(nulldata[[2]][,i])*sqrt(1+1/nsim)
 }
 
 kmax=which.max( out[,4] )
@@ -145,7 +143,7 @@ GapW.k <- function(x,clus,d.power=d.power) {
   ii <- seq_len(n)
   0.5 * sum(vapply(split(ii, clus), function(I) {
     xs <- x[I, , drop = FALSE]
-    sum(dist(xs)^d.power/nrow(xs))
+    sum(stats::dist(xs)^d.power/nrow(xs))
   }, 0))
 }
 
