@@ -4,7 +4,7 @@ UNPaC_null_sig<- function(x, k,cluster.fun,nsim=100, rho=0.02, cov="glasso",cent
   out <- NA
   x.s=scale(x)
   if (cov=="glasso"){
-    cur.scov = huge::huge(x.s, lambda=rho, method = "glasso",cov.output =TRUE,verbose =FALSE)$cov[[1]]} else if (cov=="banded"){
+    cur.scov = glasso::glasso(x.s, rho=rho)$w} else if (cov=="banded"){
     out.select =PDSCE::band.chol.cv(x.s)
     out$param=out.select[grep("best",names(out.select))]
     cur.scov = out.select$sigma
@@ -30,7 +30,7 @@ UNPaC_null_k<- function(x, k,cluster.fun,nsim=100, rho=0.02, cov="glasso",
   if (WCSS==TRUE){SSMat=matrix(NA,nrow=nsim,ncol=k)}
   x.s=scale(x)
   if (cov=="glasso"){
-    cur.scov = huge::huge(x.s, lambda=rho, method = "glasso",cov.output =TRUE,verbose =FALSE)$cov[[1]]} else if (cov=="banded"){
+    cur.scov = glasso::glasso(x.s, rho=rho)$w} else if (cov=="banded"){
       out.select =PDSCE::band.chol.cv(x.s)
       out$param=out.select[grep("best",names(out.select))]
       cur.scov = out.select$sigma

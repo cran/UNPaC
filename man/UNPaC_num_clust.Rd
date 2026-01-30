@@ -30,11 +30,11 @@ Examples include \code{\link[stats]{kmeans}} and  \code{\link[cluster]{pam}}.}
 \item{nsim}{a numeric value specifying the number of unimodal reference distributions used for testing (default=1000)}
 
 \item{cov}{method used for approximating the covariance structure.  options include: "glasso"
-(See \code{\link[huge]{huge}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
-       "est" (default = "glasso")}
+(See \code{\link[glasso]{glasso}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
+"est" (default = "glasso")}
 
-\item{rho}{a regularization parameter used in implementation of the graphical lasso. See documentation for lambda in
-\code{\link[huge]{huge}}.
+\item{rho}{a regularization parameter used in implementation of the graphical lasso. See documentation for rho in
+\code{\link[glasso]{glasso}}.
 Not used if \code{cov="est"} or \code{cov="banded"}}
 
 \item{scale}{should data be scaled such that each feature has variance equal to one prior to clustering
@@ -55,15 +55,15 @@ for options. (default="fdr"). Not used if p.adjust="none."}
 \value{
 The function returns a list with the following components:
 \itemize{
-\item{\code{BestK}}: {A matrix with 1 row and 4 columns named: "Max_CI","Max_CI_wi_1SE","Max_scaled_CI" and "Max_logWCSS_wi_1SE".
+\item{\code{BestK}}: A matrix with 1 row and 4 columns named: "Max_CI","Max_CI_wi_1SE","Max_scaled_CI" and "Max_logWCSS_wi_1SE".
 These correspond to the number of clusters, K, chosen by four different rules. "Max_CI choses K to maximize the difference in CI's between the true data and the
 reference data. "Max_CI_wi_1SE" uses the "1-SE" criterion as in Tibshirani et al (2001), except for the CI.
 "Max_scaled_CI" chooses K to maximize the difference in CIs from the observed and reference data scaled by the standard error of the reference data CIs.
-"Max_logWCSS_wi_1SE" uses the Gap statistic and the "1-SE" criterion (Tibshirani et al, 2001) for choosing K.}
-\item{\code{full_process}}: {A matrix containing the number of clusters, K, evaluated, the CI from the data, the average CI from the null
+"Max_logWCSS_wi_1SE" uses the Gap statistic and the "1-SE" criterion (Tibshirani et al, 2001) for choosing K.
+\item{\code{full_process}}: A matrix containing the number of clusters, K, evaluated, the CI from the data, the average CI from the null
 distribution, the difference between the data CI and average null CI, the standard error for the difference in CIs, the log of the within cluster dispersion from the data,
-the average log of within cluster dispersion from the null data, The difference in within cluster dispersion (the Gap statistic), and the standard error for the Gap statistic.}
-\item{\code{selected_features}}: {A vector of integers indicating the features retained by the feature filtering process.}}
+the average log of within cluster dispersion from the null data, The difference in within cluster dispersion (the Gap statistic), and the standard error for the Gap statistic.
+\item{\code{selected_features}}: A vector of integers indicating the features retained by the feature filtering process.}
 }
 \description{
 UNPaC for estimating the number of clusters Compares the cluster index (CI) from the original data to that
@@ -76,7 +76,7 @@ reference cluster indices, but additional rules are also implemented (See below)
 There are three options for the covariance matrix used in generating the Gaussian
 copula: sample covariance estimation, \code{cov="est"}, which should be used if n>p; the graphical lasso,
 \code{cov="glasso"}, which should be used if n<p; and  k-banded covariance, \code{cov="banded"}, which can be used if n<p and it can be assumed that
-features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[huge]{huge}} function.
+features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[glasso]{glasso}} function.
 When \code{cov="banded"} is selected the k-banded covariance Cholesky factor of Rothman, Levina, and Zhu (2010) is used to estimate the covariance matrix.
 Cross-validation is used for selecting the banding parameter. See documentation in \code{\link[PDSCE]{band.chol.cv}}.
 
@@ -94,9 +94,9 @@ can be used. If no features are retained the resulting p-value for the cluster s
 }
 \references{
 \itemize{
-    \item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
-     Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
-    \item Tibshirani, R., Walther, G. and Hastie, T. (2001). Estimating the number of data clusters via the Gap statistic. Journal of the Royal Statistical Society B, 63, 411-423.
+\item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
+Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
+\item Tibshirani, R., Walther, G. and Hastie, T. (2001). Estimating the number of data clusters via the Gap statistic. Journal of the Royal Statistical Society B, 63, 411-423.
 
 }
 }

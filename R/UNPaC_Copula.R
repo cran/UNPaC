@@ -17,11 +17,11 @@
 #' @param nsim a numeric value specifying the number of unimodal reference distributions used for testing
 #' (default=100)
 #' @param k integer value specifying the number of clusters to test (default=2)
-#' @param rho  a regularization parameter used in implementation of the graphical lasso. See documentation for lambda in
-#' \code{\link[huge]{huge}}.
+#' @param rho  a regularization parameter used in implementation of the graphical lasso. See documentation for rho in
+#' \code{\link[glasso]{glasso}}.
 #' Not used if \code{cov="est"} or \code{cov="banded"}
 #' @param cov method used for approximating the covariance structure.  options include: "glasso"
-#' (See \code{\link[huge]{huge}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
+#' (See \code{\link[glasso]{glasso}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
 #'        "est" (default = "glasso")
 #' @param scale should data be scaled such that each feature has variance equal to one prior to clustering
 #' (default=FALSE)
@@ -31,11 +31,11 @@
 #' @return
 #' The function returns a list with the following components:
 #' \itemize{
-#' \item{\code{selected_features}}: {A vector of integers indicating the features retained by the feature filtering process.}
-#' \item{\code{sim_CI}}: {vector containing the cluster indices for each generated unimodal reference distribution}
-#' \item{\code{pvalue_emp}}: {the empirical p-value:  the proportion of times the cluster index from the reference
-#' data is smaller the cluster index from the observed data}
-#' \item{\code{pvalue_norm}}: {the normalized p-value: the simulated p-value based on comparison to a standard normal distribution }
+#' \item{\code{selected_features}}: A vector of integers indicating the features retained by the feature filtering process.
+#' \item{\code{sim_CI}}: vector containing the cluster indices for each generated unimodal reference distribution
+#' \item{\code{pvalue_emp}}: the empirical p-value:  the proportion of times the cluster index from the reference
+#' data is smaller the cluster index from the observed data
+#' \item{\code{pvalue_norm}}: the normalized p-value: the simulated p-value based on comparison to a standard normal distribution 
 #' }
 #'
 #' @references
@@ -51,7 +51,7 @@
 #' There are three options for the covariance matrix used in generating the Gaussian
 #' copula: sample covariance estimation, \code{cov="est"}, which should be used if n>p; the graphical lasso,
 #' \code{cov="glasso"}, which should be used if n<p; and  k-banded covariance, \code{cov="banded"}, which can be used if n<p and it can be assumed that
-#' features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[huge]{huge}} function.
+#' features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[glasso]{glasso}} function.
 #' When \code{cov="banded"} is selected the k-banded covariance Cholesky factor of Rothman, Levina, and Zhu (2010) is used to estimate the covariance matrix.
 #' Cross-validation is used for selecting the banding parameter. See documentation in \code{\link[PDSCE]{band.chol.cv}}.
 #'

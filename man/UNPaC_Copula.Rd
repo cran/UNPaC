@@ -39,13 +39,13 @@ for options. (default="fdr"). Not used if p.adjust="none."}
 
 \item{k}{integer value specifying the number of clusters to test (default=2)}
 
-\item{rho}{a regularization parameter used in implementation of the graphical lasso. See documentation for lambda in
-\code{\link[huge]{huge}}.
+\item{rho}{a regularization parameter used in implementation of the graphical lasso. See documentation for rho in
+\code{\link[glasso]{glasso}}.
 Not used if \code{cov="est"} or \code{cov="banded"}}
 
 \item{cov}{method used for approximating the covariance structure.  options include: "glasso"
-(See \code{\link[huge]{huge}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
-       "est" (default = "glasso")}
+(See \code{\link[glasso]{glasso}}), "banded"  (See \code{\link[PDSCE]{band.chol.cv}}) and
+"est" (default = "glasso")}
 
 \item{center}{should data be centered such that each feature has mean equal to zero prior to clustering
 (default=TRUE)}
@@ -56,17 +56,17 @@ Not used if \code{cov="est"} or \code{cov="banded"}}
 \value{
 The function returns a list with the following components:
 \itemize{
-\item{\code{selected_features}}: {A vector of integers indicating the features retained by the feature filtering process.}
-\item{\code{sim_CI}}: {vector containing the cluster indices for each generated unimodal reference distribution}
-\item{\code{pvalue_emp}}: {the empirical p-value:  the proportion of times the cluster index from the reference
-data is smaller the cluster index from the observed data}
-\item{\code{pvalue_norm}}: {the normalized p-value: the simulated p-value based on comparison to a standard normal distribution }
+\item{\code{selected_features}}: A vector of integers indicating the features retained by the feature filtering process.
+\item{\code{sim_CI}}: vector containing the cluster indices for each generated unimodal reference distribution
+\item{\code{pvalue_emp}}: the empirical p-value:  the proportion of times the cluster index from the reference
+data is smaller the cluster index from the observed data
+\item{\code{pvalue_norm}}: the normalized p-value: the simulated p-value based on comparison to a standard normal distribution
 }
 }
 \description{
 The UnPAC test assesses the significance of clusters by comparing the cluster index (CI) from the data to the CI from a ortho-unimodal reference data generated using a Gaussian copula.
 This method is described in Helgeson, Vock, and Bair (2021).
- The CI is defined to be the sum of the
+The CI is defined to be the sum of the
 within-cluster sum of squares about the cluster means divided by the total sum of squares. Smaller values of the
 CI indicate a stronger clustering.
 }
@@ -74,7 +74,7 @@ CI indicate a stronger clustering.
 There are three options for the covariance matrix used in generating the Gaussian
 copula: sample covariance estimation, \code{cov="est"}, which should be used if n>p; the graphical lasso,
 \code{cov="glasso"}, which should be used if n<p; and  k-banded covariance, \code{cov="banded"}, which can be used if n<p and it can be assumed that
-features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[huge]{huge}} function.
+features farther away in the ordering have weaker covariance. The graphical lasso is implemented using the \code{\link[glasso]{glasso}} function.
 When \code{cov="banded"} is selected the k-banded covariance Cholesky factor of Rothman, Levina, and Zhu (2010) is used to estimate the covariance matrix.
 Cross-validation is used for selecting the banding parameter. See documentation in \code{\link[PDSCE]{band.chol.cv}}.
 
@@ -116,10 +116,8 @@ UNPaCResults <- UNPaC_Copula(test.data,cluster,hclustFunction, nsim=100,cov="est
 }
 \references{
 \itemize{
-    \item Helgeson, ES, Vock, DM, and Bair, E. (2021) ``Nonparametric cluster significance testing with reference to a unimodal null distribution."
-     Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 >
-    \item Rothman, A. J., Levina, E., and Zhu, J. (2010). ``A new approach to Cholesky-based covariance regularization in
- high dimensions." Biometrika 97(3): 539-550.
+\item Helgeson, ES, Vock, DM, and Bair, E. (2021) \verb{Nonparametric cluster significance testing with reference to a unimodal null distribution." Biometrics 77: 1215– 1226. < https://doi.org/10.1111/biom.13376 > \\item Rothman, A. J., Levina, E., and Zhu, J. (2010). }A new approach to Cholesky-based covariance regularization in
+high dimensions." Biometrika 97(3): 539-550.
 }
 }
 \author{
